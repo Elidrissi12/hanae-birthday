@@ -1,0 +1,5 @@
+/hanae/
+/.openai/
+/.vercel/
+*.tar.gz
+*.zip
