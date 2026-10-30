@@ -10,16 +10,24 @@ function render(){
  item.a.forEach((label,index)=>{
   const button=document.createElement('button');button.className='answer';button.textContent=item.love?label:`${String.fromCharCode(65+index)}.  ${label}`;
   if(item.love && index===1){
-   button.classList.add('runaway');let moves=0;
-   button.addEventListener('pointerenter',event=>{
-    if(event.pointerType!=='mouse'||button.disabled||moves>=5||matchMedia('(prefers-reduced-motion: reduce)').matches)return;
-    moves++;
+   button.classList.add('runaway');
+   function dodge(event){
+    if(button.disabled)return;
+    if(event.cancelable)event.preventDefault();
     const maxX=Math.max(0,answers.clientWidth-button.offsetWidth-8);
     const maxY=Math.max(0,answers.clientHeight-button.offsetHeight-8);
-    const x=button.offsetLeft < maxX/2 ? maxX : 8;
-    const y=24+Math.random()*Math.max(0,maxY-24);
+    // Keep the playful button below Ah and inside the quiz, even on mobile.
+    const minY=Math.min(maxY,60);
+    const x=button.offsetLeft < maxX/2 ? maxX : 0;
+    const y=button.offsetTop < (minY+maxY)/2 ? maxY : minY;
     button.style.left=`${x}px`;button.style.top=`${y}px`;
-   });
+   }
+   button.addEventListener('pointerenter',event=>{if(event.pointerType==='mouse')dodge(event)});
+   button.addEventListener('pointerdown',dodge);
+   // Also swallow the synthetic click sent after a tap, or a keyboard click.
+   button.addEventListener('click',dodge);
+   answers.append(button);
+   return;
   }
   button.addEventListener('click',()=>{
    answers.querySelectorAll('button').forEach(b=>b.disabled=true);button.classList.add('selected');
