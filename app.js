@@ -71,3 +71,29 @@ souvenirVideos.forEach(video=>{
 music.addEventListener('play',()=>{
  souvenirVideos.forEach(video=>video.pause());
 });
+
+// Try on arrival; if blocked, retry inside the first user gesture.
+let awaitingMusicStart=true;
+function stopAutomaticMusic(){
+ awaitingMusicStart=false;
+ document.removeEventListener('click',startMusicOnGesture);
+ document.removeEventListener('keydown',startMusicOnGesture);
+}
+function startMusicOnGesture(event){
+ if(!awaitingMusicStart||event.target.closest('#music-toggle, video'))return;
+ if(event.type==='keydown'&&(event.repeat||!['Enter',' '].includes(event.key)))return;
+ music.play().catch(()=>{});
+}
+music.addEventListener('play',()=>{
+ stopAutomaticMusic();musicStatus.textContent='';
+});
+musicToggle.addEventListener('click',stopAutomaticMusic);
+souvenirVideos.forEach(video=>video.addEventListener('play',stopAutomaticMusic));
+document.addEventListener('click',startMusicOnGesture);
+document.addEventListener('keydown',startMusicOnGesture);
+music.play().catch(error=>{
+ if(!awaitingMusicStart)return;
+ if(error.name==='NotAllowedError'){
+  musicStatus.textContent='Dghti f la page bach tebda l’musique ♫';
+ }
+});
