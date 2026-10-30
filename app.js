@@ -60,3 +60,14 @@ music.addEventListener('pause',syncMusic);
 music.addEventListener('error',()=>{
  musicStatus.textContent='Ma khdematch l’musique. Jerrbi merra khra ♡';syncMusic();
 });
+
+const souvenirVideos=document.querySelectorAll('.memory-video video');
+souvenirVideos.forEach(video=>{
+ video.addEventListener('play',()=>{
+  music.pause();
+  souvenirVideos.forEach(other=>{if(other!==video)other.pause();});
+ });
+});
+music.addEventListener('play',()=>{
+ souvenirVideos.forEach(video=>video.pause());
+});

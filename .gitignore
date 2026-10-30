@@ -3,3 +3,5 @@
 /.vercel/
 *.tar.gz
 *.zip
+
+/video/
