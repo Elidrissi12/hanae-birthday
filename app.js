@@ -40,3 +40,23 @@ function render(){
 next.addEventListener('click',()=>{current++;render();question.setAttribute('tabindex','-1');question.focus()});restart.addEventListener('click',()=>{current=0;render()});
 function celebrate(){if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;const box=document.querySelector('#confetti');for(let i=0;i<45;i++){const heart=document.createElement('span');heart.className='confetto';heart.textContent=['♡','✧','♥'][i%3];heart.style.left=`${Math.random()*100}%`;heart.style.color=['#a94e61','#c99656','#d6a7ad'][i%3];heart.style.animationDelay=`${Math.random()*.6}s`;box.append(heart);setTimeout(()=>heart.remove(),4000)}}
 document.querySelector('#wish').addEventListener('click',e=>{const cake=document.querySelector('#birthday-cake');cake.classList.add('blown-out');cake.setAttribute('aria-label','Gateau dyal 22 3am, chmi3at tfaw');celebrate();document.querySelector('#wish-message').textContent='Tfaw chmi3at dyal 22… w b9at l’oumnia. Kantmenna lik ga3 lfer7a li f denya, Hanae. 3id milad sa3id! ♡ — Amine';e.currentTarget.textContent='L’oumnia f l9elb ♡';e.currentTarget.disabled=true});render();
+
+const music=document.querySelector('#birthday-music');
+const musicToggle=document.querySelector('#music-toggle');
+const musicStatus=document.querySelector('#music-status');
+music.volume=0.35;
+function syncMusic(){
+ musicToggle.textContent=music.paused?'Ch3li l’ambiance ♫':'We9fi l’musique Ⅱ';
+ musicToggle.setAttribute('aria-pressed',String(!music.paused));
+}
+musicToggle.addEventListener('click',async()=>{
+ if(!music.paused){music.pause();return;}
+ musicToggle.disabled=true;musicStatus.textContent='';
+ try{await music.play();}catch{musicStatus.textContent='Ma khdematch l’musique. Jerrbi merra khra ♡';}
+ finally{musicToggle.disabled=false;syncMusic();}
+});
+music.addEventListener('play',syncMusic);
+music.addEventListener('pause',syncMusic);
+music.addEventListener('error',()=>{
+ musicStatus.textContent='Ma khdematch l’musique. Jerrbi merra khra ♡';syncMusic();
+});
